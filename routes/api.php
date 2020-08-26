@@ -20,6 +20,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::apiresource('brands','Api\BrandController');
 
+Route::apiresource('categories','Api\CategoryController');
+
+Route::apiresource('subcategories','Api\SubcategoryController');
+
+Route::apiresource('items','Api\ItemController');
+
+
+
+
 //php artisan make:controller Api/BrandController --api -- model = Brand
 //--api (not include create edit)
 //--model = Brand (create obj,not using fillter by id)

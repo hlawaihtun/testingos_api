@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ItemResource;
+use App\Item;
 use Illuminate\Http\Request;
-use App\Category;
-use App\Http\Resources\CategoryResource;
 
-class CategoryController extends Controller
+class ItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,12 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        return CategoryResource::collection($categories);
+        $items = Item::all();
+        return response()->json([
+            "status" => "ok",
+            "totalResults" => count($items),
+            "items" => ItemResource::collection($items)
+        ]);
     }
 
     /**
@@ -28,25 +32,39 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+           // Validation
         $request->validate([
+            'codeno' => 'required',
             'name' => 'required',
             'photo' => 'required',
+            'price' => 'required',
+            'discount' => 'required',
+            'description' => 'required',
+            'brand' => 'required',
+            'subcategory' => 'required',
+
         ]);
 
         // File Upload
         $imageName = time().'.'.$request->photo->extension();
 
-        $request->photo->move(public_path('backend/categoryimg'),$imageName);
-        $myfile = 'backend/categoryimg/'.$imageName;
+        $request->photo->move(public_path('backend/itemimg'),$imageName);
+        $myfile = 'backend/itemimg/'.$imageName;
 
         // Store Data
-        $category = new Category;
-        $category->name = $request->name;
-        $category->photo = $myfile;
+        $item = new Item;
+        $item->codeno = $request->codeno;
+        $item->name = $request->name;
+        $item->photo = $myfile;
+        $item->price = $request->price;
+        $item->discount = $request->discount;
+        $item->description = $request->description;
+        $item->brand_id = $request->brand;
+        $item->subcategory_id = $request->subcategory;
 
-        $category->save();
-
-        return new CategoryResource($category);
+        $item->save();
+        //new write
+        return new ItemResource($item);
     }
 
     /**
@@ -55,9 +73,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Cateogry $category)
+    public function show(Item $item)
     {
-        return new CategoryResource($category);
+        return new ItemResource($item);
     }
 
     /**

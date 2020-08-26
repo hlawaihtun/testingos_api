@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use App\Subcategory;
+use App\Category;
+use App\Http\Resources\SubcategoryResource;
+use App\Http\Resources\CategoryResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -14,8 +17,8 @@ class SubcategoryController extends Controller
      */
     public function index()
     {
-        $subcateogries = Subcateogry::find();
-        return $subcateogries;
+        $subcategories = Subcategory::all();
+        return SubcategoryResource::collection($subcategories);
     }
 
     /**
@@ -26,7 +29,21 @@ class SubcategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'category' => 'required',
+        ]);
+
+        // File Upload
+        
+        // Store Data
+        $subcategory = new Subcategory;
+        $subcategory->name = $request->name;
+        $subcategory->category_id = $request->category;
+
+        $subcategory->save();
+
+        return new SubcategoryResource($subcategory);
     }
 
     /**
@@ -35,9 +52,9 @@ class SubcategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Subcategory $subcategory)
     {
-        return $subcateogries;
+        return new SubcategoryResource($subcategory);
     }
 
     /**
