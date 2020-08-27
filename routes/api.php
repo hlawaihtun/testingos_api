@@ -26,6 +26,9 @@ Route::apiresource('subcategories','Api\SubcategoryController');
 
 Route::apiresource('items','Api\ItemController');
 
+Route::apiresource('users','Api\UserController');
+
+
 
 
 
